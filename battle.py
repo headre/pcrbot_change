@@ -462,31 +462,34 @@ class ClanBattle:
         challenge.save()
         group.save()
 
-        rude_sentences_noob=['你会不会出刀呀，会长用脚都比你能打','这个伤害搁这玩呢，会长马上到你家门口','上帝才有怜悯之心，而我的工作就是送你去见上帝']
+        rude_sentences_noob=['你会不会出刀呀，会长用脚都比你能打','这个伤害搁这玩呢，会长马上到你家门口','上帝才有怜悯之心，而我的工作就是送你去见上帝','不会吧不会吧，不会真有人只能打这么点伤害吧，不会吧，就这？就这就这？','就这？爬']
         rude_sentences_hack=['你这个刀牛逼呀，会长马上给你来送锦旗','完了，这科技刀，大家好聚好散吧','伞兵一号卢本伟准备就绪！']
         num_rudeSN=random.randint(0,len(rude_sentences_noob)-1)
         num_rudeSH=random.randint(0,len(rude_sentences_hack)-1)
         #以下句段用于调教机器人符合一色彩羽的嗜好
-        praise_sentences=['哇，是一色哥哥，一色哥哥来了','哇，一色哥哥真棒','一色哥哥太厉害了，我要变成一色哥哥的形状了，’来吧，一色哥哥，再用点力']
+        praise_sentences=['哇，是一色哥哥，一色哥哥来了','哇，一色哥哥真棒','一色哥哥太厉害了，我要变成一色哥哥的形状了','来吧，一色哥哥，再用点力']
         num_praise=random.randint(0,len(praise_sentences)-1)
         nik = user.nickname or user.qqid
-        if_praise = True if nik=='一色彩羽'else False
+        print(num_rudeSN)
+        if_praise = True if '一色彩羽'in nik else False
         if defeat:
             msg = '{}对boss造成了{:,}点伤害，击败了boss\n（今日第{}刀，{}）'.format(
                 nik, health_before, finished+1, '尾余刀' if is_continue else '收尾刀'
             )
             if if_praise:
-                msg+='\n@{}'.format(nik)+praise_sentences[num_praise]+'\n'
+                msg+='\n@{} '.format(nik)+praise_sentences[num_praise]
             elif health_before>2000000:
-                msg+='\n@{}'.format(nik)+rude_sentences_hack[num_rudeSH]+'\n'
+                msg+='\n@{} '.format(nik)+rude_sentences_hack[num_rudeSH]
         else:
             msg = '{}对boss造成了{:,}点伤害\n（今日第{}刀，{}）'.format(
                 nik, damage, finished+1, '剩余刀' if is_continue else '完整刀'
             )
             if if_praise:
-                msg+='\n@{}'.format(nik)+praise_sentences[num_praise]+'\n'
+                msg+='\n@{} '.format(nik)+praise_sentences[num_praise]
             elif (not is_continue) and damage<300000:
-                msg+='\n@{}'.format(nik)+rude_sentences_noob[num_rudeSN]+'\n'
+                if '炽楪' in nik:
+                    msg+='来自枫钥的“打的输出就这？给爷爪巴\n”'
+                msg+='\n@{} '.format(nik)+rude_sentences_noob[num_rudeSN]
         status = BossStatus(
             group.boss_cycle,
             group.boss_num,
